@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#MJ_APIKEY_PUBLIC
+#MJ_APIKEY_PRIVATE
+#RECIPIENT_MAIL
+#RECIPIENT_NAME
+
+UPS_NAME="YOUR UPS @ $HOSTNAME"
+SUBJECT="CURRENT UPS STATE: $1"
+TEXT="WHO WAS IN PARIS?: $2"
+
+# This call sends a message to one recipient.
+curl -s \
+    -X POST \
+    --user "$MJ_APIKEY_PUBLIC:$MJ_APIKEY_PRIVATE" \
+    https://api.mailjet.com/v3.1/send \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "Messages":[
+                {
+                        "From": {
+                                "Email": "ir.apcups@int.pl",
+                                "Name": "'"$UPS_NAME"'"
+                        },
+                        "To": [
+                                {
+                                        "Email": "'"$RECIPIENT_MAIL"'",
+                                        "Name": "'"$RECIPIENT_NAME"'"
+                                }
+                        ],
+                        "Subject": "'"$SUBJECT"'",
+                        "TextPart": "'"$TEXT"'"
+                }
+        ]
+        }'

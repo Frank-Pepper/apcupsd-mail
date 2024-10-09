@@ -1,0 +1,14 @@
+#!/bin/bash
+
+TARGETDIR=/etc/apcupsd
+VARIABLES=variables
+MAILSCRIPT=mail
+
+EVENTS=("offbattery" "onbattery")
+
+for event in ${EVENTS[@]}; do
+    echo $event
+    cat ${VARIABLES} | sudo tee ${TARGETDIR}/${event}
+done
+
+cat ${MAILSCRIPT} | sudo tee ${TARGETDIR}/${MAILSCRIPT}
