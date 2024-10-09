@@ -1,0 +1,14 @@
+#!/bin/bash
+# Change name of the file to variables, before running deploy
+SCRIPTDIR=/etc/apcupsd
+MAILSCRIPT=mail
+
+export MJ_APIKEY_PUBLIC=""
+export MJ_APIKEY_PRIVATE=""
+export RECIPIENT_MAIL=""
+export RECIPIENT_NAME="John Doe"
+
+STATUS=$(apcaccess status -p STATUS)
+BCHARGE=$(apcaccess status -p BCHARGE)
+
+${SCRIPTDIR}/${MAILSCRIPT} $STATUS $BCHARGE
