@@ -3,12 +3,19 @@
 TARGETDIR=/etc/apcupsd
 VARIABLES=variables
 MAILSCRIPT=mail
+JSONIFY=status_tojson
+
+WEBDIR=/var/www/html
+WEBPAGE=index.nginx-debian.html.html
 
 EVENTS=("offbattery" "onbattery")
 
 for event in ${EVENTS[@]}; do
     echo $event
-    cat ${VARIABLES} | sudo tee ${TARGETDIR}/${event}
+    sudo cp ${VARIABLES} ${TARGETDIR}/${event}
 done
 
-cat ${MAILSCRIPT} | sudo tee ${TARGETDIR}/${MAILSCRIPT}
+sudo cp ${MAILSCRIPT} ${TARGETDIR}/${MAILSCRIPT}
+sudo cp ${JSONIFY} ${TARGETDIR}/${JSONIFY}
+
+sudo cp ${WEBPAGE} ${WEBDIR}/${WEBPAGE}

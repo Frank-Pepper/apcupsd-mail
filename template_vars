@@ -1,7 +1,9 @@
 #!/bin/bash
+
 # Change name of the file to variables, before running deploy
 SCRIPTDIR=/etc/apcupsd
 MAILSCRIPT=mail
+JSONIFY=status_tojson
 
 export MJ_APIKEY_PUBLIC=""
 export MJ_APIKEY_PRIVATE=""
@@ -12,3 +14,4 @@ STATUS=$(apcaccess status -p STATUS)
 BCHARGE=$(apcaccess status -p BCHARGE)
 
 ${SCRIPTDIR}/${MAILSCRIPT} $STATUS $BCHARGE
+${SCRIPTDIR}/${JSONIFY}

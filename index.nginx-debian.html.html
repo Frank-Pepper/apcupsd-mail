@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UPS DATA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dodatkowe informacje o UPS</h1>
+    <table id="json-table">
+        <thead>
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be inserted here dynamically -->
+        </tbody>
+    </table>
+
+    <script>
+        // Function to fetch JSON data and convert it into a table
+        function fetchAndDisplayJson() {
+            fetch('output.json')
+                .then(response => response.json())
+                .then(data => {
+                    // Get the table body element
+                    const tableBody = document.querySelector('#json-table tbody');
+
+                    // Clear any existing rows
+                    tableBody.innerHTML = '';
+
+                    const keys = ["UPSNAME", "STATUS", "BCHARGE", "TIMELEFT", "MINTIMEL", "MAXTIME", "TONBATT", "CUMONBATT"];
+
+                    // Loop through the JSON object and insert rows into the table
+                    for (const [key, value] of Object.entries(data)) {
+                        if(keys.includes(key)) {
+                            const row = document.createElement('tr');
+
+                            // Create the key column
+                            const keyCell = document.createElement('td');
+                            keyCell.textContent = key;
+                            row.appendChild(keyCell);
+
+                            // Create the value column
+                            const valueCell = document.createElement('td');
+                            valueCell.textContent = value;
+                            row.appendChild(valueCell);
+
+                            // Append the row to the table body
+                            tableBody.appendChild(row);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching JSON:', error));
+        }
+
+        // Fetch and display the JSON data when the page loads
+        fetchAndDisplayJson();
+
+        // Refresh the table data every 5 seconds
+        setInterval(fetchAndDisplayJson, 5000);
+    </script>
+</body>
+</html>

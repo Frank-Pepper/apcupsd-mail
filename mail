@@ -7,7 +7,7 @@
 
 UPS_NAME="YOUR UPS @ $HOSTNAME"
 SUBJECT="CURRENT UPS STATE: $1"
-TEXT="WHO WAS IN PARIS?: $2"
+TEXT="BATTERY CHARGE: $2"
 
 # This call sends a message to one recipient.
 curl -s \

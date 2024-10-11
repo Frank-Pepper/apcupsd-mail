@@ -1,0 +1,28 @@
+#!/bin/bash
+
+output_file="$HOME/output.json"
+
+# Initialize an empty JSON object
+echo "{" > $output_file
+
+# Read the input line by line
+while IFS= read -r line; do
+    # Skip empty lines or lines that start with "END APC"
+    [[ -z "$line" || "$line" =~ ^END\ APC ]] && continue
+
+    # Extract the key and value, trim spaces
+    key=$(echo "$line" | cut -d':' -f1 | xargs)
+    value=$(echo "$line" | cut -d':' -f2- | xargs)
+
+    # If the value contains quotes, escape them
+    value=$(echo "$value" | sed 's/"/\\"/g')
+
+    # Add the key-value pair to the JSON file
+    echo "  \"$key\": \"$value\"," >> $output_file
+done < <(/sbin/apcaccess status)
+
+# Remove the last comma and close the JSON object
+sed -i '$ s/,$//' $output_file
+echo "}" >> $output_file
+
+sudo mv $output_file /var/www/html/output.json
