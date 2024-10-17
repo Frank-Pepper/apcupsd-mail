@@ -7,11 +7,21 @@ JSONIFY=status_tojson
 
 export MJ_APIKEY_PUBLIC=""
 export MJ_APIKEY_PRIVATE=""
+export SENDER_MAIL=""
 export RECIPIENT_MAIL=""
 export RECIPIENT_NAME="John Doe"
 
-STATUS=$(apcaccess status -p STATUS)
-BCHARGE=$(apcaccess status -p BCHARGE)
+arr=()
+while IFS=  read -r line; do
+    echo $line
+    arr+=( "$(echo $line | cut -d':' -f2- | xargs)" )
+done < <(apcaccess status | grep -E -i '^(STATUS|BCHARGE)')
 
-${SCRIPTDIR}/${MAILSCRIPT} $STATUS $BCHARGE
+STATUS=${arr[0]}
+BCHARGE=${arr[1]}
+
+echo $STATUS
+echo $BCHARGE
+
+${SCRIPTDIR}/${MAILSCRIPT} "$STATUS" "$BCHARGE"
 ${SCRIPTDIR}/${JSONIFY}

@@ -9,6 +9,8 @@ UPS_NAME="YOUR UPS @ $HOSTNAME"
 SUBJECT="CURRENT UPS STATE: $1"
 TEXT="BATTERY CHARGE: $2"
 
+echo $SUBJECT
+echo $TEXT
 # This call sends a message to one recipient.
 curl -s \
     -X POST \
@@ -19,7 +21,7 @@ curl -s \
         "Messages":[
                 {
                         "From": {
-                                "Email": "ir.apcups@int.pl",
+                                "Email": "'"$SENDER_MAIL"'",
                                 "Name": "'"$UPS_NAME"'"
                         },
                         "To": [
