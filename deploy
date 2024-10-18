@@ -6,7 +6,7 @@ MAILSCRIPT=mail
 JSONIFY=status_tojson
 
 WEBDIR=/var/www/html
-WEBPAGE=index.nginx-debian.html.html
+WEBPAGE=index.nginx-debian.html
 
 EVENTS=("offbattery" "onbattery")
 
