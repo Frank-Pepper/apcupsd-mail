@@ -2,27 +2,37 @@
 
 output_file="$HOME/output.json"
 
-# Initialize an empty JSON object
-echo "{" > $output_file
+# Initialize an empty array to hold key-value pairs
+json_content=""
 
 # Read the input line by line
 while IFS= read -r line; do
     # Skip empty lines or lines that start with "END APC"
     [[ -z "$line" || "$line" =~ ^END\ APC ]] && continue
 
-    # Extract the key and value, trim spaces
-    key=$(echo "$line" | cut -d':' -f1 | xargs)
-    value=$(echo "$line" | cut -d':' -f2- | xargs)
+    # Extract the key and value
+    key="${line%%:*}"
+    value="${line#*:}"
 
-    # If the value contains quotes, escape them
-    value=$(echo "$value" | sed 's/"/\\"/g')
+    # Trim spaces
+    key="${key//[[:space:]]/}"
+    value="${value//[[:space:]]/}"
 
-    # Add the key-value pair to the JSON file
-    echo "  \"$key\": \"$value\"," >> $output_file
+    # Escape quotes in the value
+    value="${value//\"/\\\"}"
+
+    # Add the key-value pair to the JSON structure
+    json_content="$json_content  \"$key\": \"$value\",\n"
 done < <(/sbin/apcaccess status)
 
-# Remove the last comma and close the JSON object
-sed -i '$ s/,$//' $output_file
-echo "}" >> $output_file
+# Remove the last comma
+json_content="${json_content%,}"
 
+# Wrap the JSON content with curly braces
+json_content="{\n$json_content\n}"
+
+# Write the final JSON content to the output file
+echo -e "$json_content" > $output_file
+
+# Move the output file to the desired location
 sudo mv $output_file /var/www/html/output.json
