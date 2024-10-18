@@ -22,10 +22,10 @@ while IFS= read -r line; do
     value="${value//\"/\\\"}"
 
     # Add the key-value pair to the JSON structure
-    json_content="$json_content  \"$key\": \"$value\",\n"
+    json_content="$json_content  \"$key\": \"$value\","
 done < <(/sbin/apcaccess status)
 
-# Remove the last comma
+# Remove the trailing comma correctly
 json_content="${json_content%,}"
 
 # Wrap the JSON content with curly braces
