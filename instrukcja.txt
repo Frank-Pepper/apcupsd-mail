@@ -1,0 +1,47 @@
+1. Skonfigurowanie UPSa
+    sudo nano /etc/apcupsd/apcupsd.conf
+
+    1.1 Znajdź i edytuj UPSCABLE, UPSTYPE, DEVICE
+        UPSCABLE usb
+        UPSTYPE usb
+        #DEVICE /dev/ttyS0 # zakomentowanie lini
+        DEVICE
+
+    1.2 Potwierdź skonfigurowanie UPSa
+        sudo nano /etc/default/apcupsd
+
+        ISCONFIGURED=yes
+
+    1.3 Ponownie uruchom malinkę.
+
+2. Rozpakuj archiwum zip na malince.
+    2.1 Korzystamy z darmowego serwera smtp oferowanego przez Mailjet, pozwala wysłać do 200 maili dziennie.
+    2.2 Po założeniu konta wygeneruj klucz api potrzebny do uwierzetylnienia, aby korzystać z serwera smtp.
+    2.3 Narzędzie curl pozwala na wysłanie maila dzieki metodzie POST.
+    2.4 Dane niezbędne do wysłania maila znajdują się w poliku template_vars uzupełnij je i zmień nazwę pliku na variables. 
+        MJ_APIKEY_PUBLIC="" - publiczny klucz api
+        MJ_APIKEY_PRIVATE="" - sekretny klucz api
+        SENDER_MAIL="" - email nadawcy, podany w trakcie rejestracji konta
+        RECIPIENT_MAIL="" - email odbiorcy
+        RECIPIENT_NAME="" - imie odbiorcy
+
+3. Zainstaluj serwer wwww, w naszym przypadku jest to nginx.
+    sudo apt install nginx
+
+    3.1 Korzystamy z domyślnej konfiguracji serwera, wyświetlany plik html znajduje się w katalogu /var/www/html
+    3.2 Włączenie usługi systemowej i ustawienienie, aby była dostępna po uruchomieniu systemu
+        sudo systemctl enable --now nginx
+
+4. Przejdź do lokalizacji rozpakowanego archiwum i uruchom skrypt deploy.
+    ./deploy
+
+    4.1 Wykona następujące operacje:
+        4.1.1 Skrypty uruchamiane podczas zmiany stanu UPSa zostaną skopiowane do katalogu /etc/apcupsd.
+        4.1.2 Skrypt tworzący jsona z wyniku komendy apcaccess status, potrzebny do wyświetlenia informacji na stronie.
+        4.1.3 Skopiowanie pliku html wyświetlanego przez serwer nginx do katalogu /var/www/html
+
+5. Ustawienie crona, aby aktulaizować informacje o UPSie dostępne na stronie.
+        crontab -e
+
+        5.1 Dodanie lini na końcu pliku, aby aktualizować dane co minutę.
+            */1 * * * * /etc/apcupsd/status_tojson

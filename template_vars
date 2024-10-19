@@ -11,14 +11,15 @@ export SENDER_MAIL=""
 export RECIPIENT_MAIL=""
 export RECIPIENT_NAME="John Doe"
 
-arr=()
+STATUS_VALUES=()
+
 while IFS=  read -r line; do
     echo $line
-    arr+=( "$(echo $line | cut -d':' -f2- | xargs)" )
+    STATUS_VALUES+=( "$(echo $line | cut -d':' -f2- | xargs)" )
 done < <(apcaccess status | grep -E -i '^(STATUS|BCHARGE)')
 
-STATUS=${arr[0]}
-BCHARGE=${arr[1]}
+STATUS=${STATUS_VALUES[0]}
+BCHARGE=${STATUS_VALUES[1]}
 
 echo $STATUS
 echo $BCHARGE
